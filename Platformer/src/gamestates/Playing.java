@@ -122,3 +122,51 @@ private void checkCloseToBorder() {
         }
 
     }
+    
+ public void resetAll() {
+        //TODO: Reset playing, enemy, lvl, etc.
+        gameOver = false;
+        paused = false;
+        player.resetAll();
+        enemyManager.resetAllEnemies();
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        enemyManager.checkEnemyHit(attackBox);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (!gameOver) {
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                player.setAttacking(true);
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (gameOver) {
+            gameOverOverlay.keyPressed(e);
+        } else {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A:
+                    player.setLeft(true);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(true);
+                    break;
+                case KeyEvent.VK_SPACE:
+                    player.setJump(true);
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    paused = !paused;
+                    break;
+            }
+        }
+    }
+}
