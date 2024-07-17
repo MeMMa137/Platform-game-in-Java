@@ -72,3 +72,53 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.update();
         }
     }
+    
+
+private void checkCloseToBorder() {
+        int playerX = (int) player.getHitbox().x;
+        int diff = playerX - xLvlOffset;
+
+        if (diff > rightBorder) {
+            xLvlOffset += diff - rightBorder;
+        } else if (diff < leftBorder) {
+            xLvlOffset += diff - leftBorder;
+        }
+
+        if (xLvlOffset > maxLvlOffsetX) {
+            xLvlOffset = maxLvlOffsetX;
+        } else if (xLvlOffset < 0) {
+            xLvlOffset = 0;
+        }
+
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        g.drawImage(backgroundImg, 0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT, null);
+
+        drawClouds(g);
+
+        levelManager.draw(g, xLvlOffset);
+        player.render(g, xLvlOffset);
+        enemyManager.draw(g, xLvlOffset);
+
+        if (paused) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
+            pauseOverlay.draw(g);
+        } else if (gameOver) {
+            gameOverOverlay.draw(g);
+        }
+    }
+
+    private void drawClouds(Graphics g) {
+
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(bigCloud, i * BIG_CLOUD_WIDTH - (int) (xLvlOffset * 0.3), (int) (204 * Game.SCALE), BIG_CLOUD_WIDTH, BIG_CLOUD_HEIGHT, null);
+        }
+
+        for (int i = 0; i < smallCloudsPos.length; i++) {
+            g.drawImage(smallCloud, SMALL_CLOUD_WIDTH * 4 * i - (int) (xLvlOffset * 0.7), smallCloudsPos[i], SMALL_CLOUD_WIDTH, SMALL_CLOUD_HEIGHT, null);
+        }
+
+    }
