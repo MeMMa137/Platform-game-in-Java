@@ -72,9 +72,8 @@ public class Playing extends State implements Statemethods {
             pauseOverlay.update();
         }
     }
-    
 
-private void checkCloseToBorder() {
+    private void checkCloseToBorder() {
         int playerX = (int) player.getHitbox().x;
         int diff = playerX - xLvlOffset;
 
@@ -122,8 +121,8 @@ private void checkCloseToBorder() {
         }
 
     }
-    
- public void resetAll() {
+
+    public void resetAll() {
         //TODO: Reset playing, enemy, lvl, etc.
         gameOver = false;
         paused = false;
@@ -169,4 +168,69 @@ private void checkCloseToBorder() {
             }
         }
     }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (!gameOver) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_A:
+                    player.setLeft(false);
+                    break;
+                case KeyEvent.VK_D:
+                    player.setRight(false);
+                    break;
+                case KeyEvent.VK_SPACE:
+                    player.setJump(false);
+                    break;
+            }
+        }
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mouseDragged(e);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mousePressed(e);
+            }
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mouseReleased(e);
+            }
+        }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (!gameOver) {
+            if (paused) {
+                pauseOverlay.mouseMoved(e);
+            }
+        }
+    }
+
+    public void unpauseGame() {
+        paused = false;
+    }
+
+    public void windowFocusLost() {
+        player.resetDirBooleans();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
 }
