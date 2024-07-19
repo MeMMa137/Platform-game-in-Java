@@ -143,4 +143,43 @@ public class PauseOverlay {
                 playing.unpauseGame();
             }
         }
+         musicButton.resetBools();
+        sfxButton.resetBools();
+        menuB.resetBools();
+        replayB.resetBools();
+        unpauseB.resetBools();
+        volumeButton.resetBools();
+
+    }
+
+    public void mouseMoved(MouseEvent e) {
+        musicButton.setMouseOver(false);
+        sfxButton.setMouseOver(false);
+        menuB.setMouseOver(false);
+        replayB.setMouseOver(false);
+        unpauseB.setMouseOver(false);
+        volumeButton.setMouseOver(false);
+
+        if (isIn(e, musicButton)) {
+            musicButton.setMouseOver(true);
+        } else if (isIn(e, sfxButton)) {
+            sfxButton.setMouseOver(true);
+        } else if (isIn(e, menuB)) {
+            menuB.setMouseOver(true);
+        } else if (isIn(e, replayB)) {
+            replayB.setMouseOver(true);
+        } else if (isIn(e, unpauseB)) {
+            unpauseB.setMouseOver(true);
+        } else if (isIn(e, volumeButton)) {
+            volumeButton.setMouseOver(true);
+        }
+
+    }
+
+    private boolean isIn(MouseEvent e, PauseButton b) {
+        return b.getBounds().contains(e.getX(), e.getY());
+    }
+
+}
+
 
