@@ -38,3 +38,48 @@ public class MenuButton {
             imgs[i] = temp.getSubimage(i * B_WIDTH_DEFAULT, rowIndex * B_HEIGHT_DEFAULT, B_WIDTH_DEFAULT, B_HEIGHT_DEFAULT);
         }
     }
+    
+ public void draw(Graphics g) {
+        g.drawImage(imgs[index], xPos - xOffsetCenter, yPos, B_WIDTH, B_HEIGHT, null);
+    }
+
+    public void update() {
+        index = 0;
+        if (mouseOver) {
+            index = 1;
+        }
+        if (mousePressed) {
+            index = 2;
+        }
+    }
+
+    public boolean isMouseOver() {
+        return mouseOver;
+    }
+
+    public void setMouseOver(boolean mouseOver) {
+        this.mouseOver = mouseOver;
+    }
+
+    public boolean isMousePressed() {
+        return mousePressed;
+    }
+
+    public void setMousePressed(boolean mousePressed) {
+        this.mousePressed = mousePressed;
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    public void applyGamestate() {
+        Gamestate.state = state;
+    }
+
+    public void resetBools() {
+        mouseOver = false;
+        mousePressed = false;
+    }
+    
+}
