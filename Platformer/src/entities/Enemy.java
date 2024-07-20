@@ -48,3 +48,47 @@ protected void firstUpdateCheck(int[][] lvlData) {
             tileY = (int) (hitbox.y / Game.TILES_SIZE);
         }
     }
+    
+    protected void move(int[][] lvlData) {
+        float xSpeed = 0;
+        if (walkDir == LEFT) {
+            xSpeed = -walkSpeed;
+        } else {
+            xSpeed = walkSpeed;
+        }
+
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+            if (IsFloor(hitbox, xSpeed, lvlData)) {
+                hitbox.x += xSpeed;
+                return;
+            }
+        }
+
+        changeWalkDir();
+    }
+
+    protected void turnTowardsPlayer(Player player) {
+        if (player.hitbox.x > hitbox.x) {
+            walkDir = RIGHT;
+        } else {
+            walkDir = LEFT;
+        }
+    }
+
+    protected boolean canSeePlayer(int[][] lvlData, Player player) {
+        int playerTileY = (int) (player.getHitbox().y / Game.TILES_SIZE);
+        if (playerTileY == tileY) {
+            if (isPlayerInRange(player)) {
+                if (IsSightClear(lvlData, hitbox, player.hitbox, tileY)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected boolean isPlayerInRange(Player player) {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackDistance * 5;
+    }
+}
