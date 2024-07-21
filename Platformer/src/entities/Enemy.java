@@ -91,4 +91,70 @@ protected void firstUpdateCheck(int[][] lvlData) {
         int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
         return absValue <= attackDistance * 5;
     }
+ protected boolean isPlayerCloseForAttack(Player player) {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackDistance;
+    }
+
+    protected void newState(int enemyState) {
+        this.enemyState = enemyState;
+        aniTick = 0;
+        aniIndex = 0;
+    }
+
+    public void hurt(int amount) {
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            newState(DEAD);
+        } else {
+            newState(HIT);
+        }
+    }
+
+    protected void checkEnemyHit(Rectangle2D.Float attackBox, Player player) {
+        if (attackBox.intersects(player.getHitbox())) {
+            player.changeHealth(-GetEnemyDamage(enemyType));
+        }
+        attackChecked = true;
+    }
+
+    protected void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= GetSpriteAmount(enemyType, enemyState)) {
+                aniIndex = 0;
+
+                switch (enemyState) {
+                    case ATTACK, HIT ->
+                        enemyState = IDLE;
+                    case DEAD ->
+                        active = false;
+                }
+            }
+        }
+    }
+
+    protected void changeWalkDir() {
+        if (walkDir == LEFT) {
+            walkDir = RIGHT;
+        } else {
+            walkDir = LEFT;
+        }
+    }
+
+    public int getAniIndex() {
+        return aniIndex;
+    }
+
+    public int getEnemyState() {
+        return enemyState;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
 }
+
