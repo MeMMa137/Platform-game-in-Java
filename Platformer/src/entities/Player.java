@@ -120,4 +120,113 @@ public void render(Graphics g, int lvlOffset) {
         g.setColor(Color.RED);
         g.drawRect((int) attackBox.x - lvlOffsetX, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
     }
+    
+    private void drawUI(Graphics g) {
+        g.drawImage(statusBarImg, statusBarX, statusBarY, statusBarWidth, statusBarHeight, null);
+        g.setColor(Color.RED);
+        g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
+    }
+
+    private void updateAnimationTick() {
+        aniTick++;
+        if (aniTick >= aniSpeed) {
+            aniTick = 0;
+            aniIndex++;
+            if (aniIndex >= GetSpriteAmount(playerAction)) {
+                aniIndex = 0;
+                attacking = false;
+                attackChecked = false;
+            }
+        }
+    }
+
+    private void setAnimation() {
+        int startAni = playerAction;
+
+        if (moving) {
+            playerAction = RUNNING;
+        } else {
+            playerAction = IDLE;
+        }
+
+        if (inAir) {
+            if (airSpeed < 0) {
+                playerAction = JUMP;
+            } else {
+                playerAction = FALLING;
+            }
+        }
+
+        if (attacking) {
+            playerAction = ATTACK;
+            if (startAni != ATTACK) {
+                aniIndex = 1;
+                aniTick = 0;
+                return;
+            }
+        }
+
+        if (startAni != playerAction) {
+            resetAniTick();
+        }
+    }
+
+    private void resetAniTick() {
+        aniTick = 0;
+        aniIndex = 0;
+    }
+
+    private void updatePos() {
+        moving = false;
+
+        if (jump) {
+            jump();
+        }
+
+        if (!inAir) {
+            if ((!left && !right) || (right && left)) {
+                return;
+            }
+        }
+
+        float xSpeed = 0;
+
+        if (left) {
+            xSpeed -= playerSpeed;
+            flipX = width;
+            flipW = -1;
+        }
+        if (right) {
+            xSpeed += playerSpeed;
+            flipX = 0;
+            flipW = 1;
+        }
+
+        if (!inAir) {
+            if (!IsEntityOnFloor(hitbox, lvlData)) {
+                inAir = true;
+            }
+        }
+
+        if (inAir) {
+            if (CanMoveHere(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
+                hitbox.y += airSpeed;
+                airSpeed += gravity;
+                updateXPos(xSpeed);
+            } else {
+                hitbox.y = GetEntityYPosUnderRoofOrAboveFloor(hitbox, airSpeed);
+                if (airSpeed > 0) {
+                    resetInAir();
+                } else {
+                    airSpeed = fallSpeedAfterCollision;
+                }
+                updateXPos(xSpeed);
+            }
+
+        } else {
+            updateXPos(xSpeed);
+        }
+        moving = true;
+    }
+
 }
