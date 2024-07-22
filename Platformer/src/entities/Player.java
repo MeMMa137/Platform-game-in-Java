@@ -56,3 +56,68 @@ public class Player extends Entity {
 
     private boolean attackChecked;
     private Playing playing;
+
+public Player(float x, float y, int width, int height, Playing playing) {
+        super(x, y, width, height);
+        this.playing = playing;
+        loadAnimations();
+        initHitbox(x, y, (int) (20 * Game.SCALE), (int) (27 * Game.SCALE));
+        initAttackBox();
+    }
+
+    private void initAttackBox() {
+        attackBox = new Rectangle2D.Float(x, y, (int) (20 * Game.SCALE), (int) (20 * Game.SCALE));
+    }
+
+    public void update() {
+        updateHealthBar();
+        if (currentHealth <= 0) {
+            playing.setGameOver(true);
+            return;
+        }
+        updateAttackBox();
+
+        updatePos();
+        if (attacking) {
+            checkAttack();
+        }
+        updateAnimationTick();
+        setAnimation();
+    }
+
+    private void checkAttack() {
+        if (attackChecked || aniIndex != 1) {
+            return;
+        }
+        attackChecked = true;
+        playing.checkEnemyHit(attackBox);
+    }
+
+    private void updateAttackBox() {
+        if (right) {
+            attackBox.x = hitbox.x + hitbox.width + (int) (10 * Game.SCALE);
+        } else if (left) {
+            attackBox.x = hitbox.x - hitbox.width - (int) (10 * Game.SCALE);
+        }
+        attackBox.y = hitbox.y + (10 * Game.SCALE);
+    }
+
+    private void updateHealthBar() {
+        healthWidth = (int) ((currentHealth / (float) maxHealth) * healthBarWidth);
+    }
+    
+public void render(Graphics g, int lvlOffset) {
+        g.drawImage(animations[playerAction][aniIndex],
+                (int) (hitbox.x - xDrawOffset) - lvlOffset + flipX,
+                (int) (hitbox.y - yDrawOffset),
+                width * flipW, height, null);
+        drawHitbox(g, lvlOffset);
+        drawAttackBox(g, lvlOffset);
+        drawUI(g);
+    }
+
+    private void drawAttackBox(Graphics g, int lvlOffsetX) {
+        g.setColor(Color.RED);
+        g.drawRect((int) attackBox.x - lvlOffsetX, (int) attackBox.y, (int) attackBox.width, (int) attackBox.height);
+    }
+}
