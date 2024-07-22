@@ -228,5 +228,125 @@ public void render(Graphics g, int lvlOffset) {
         }
         moving = true;
     }
+    
+    private void jump() {
+        if (inAir) {
+            return;
+        }
+        inAir = true;
+        airSpeed = jumpSpeed;
+
+    }
+
+    private void resetInAir() {
+        inAir = false;
+        airSpeed = 0;
+
+    }
+
+    private void updateXPos(float xSpeed) {
+        if (CanMoveHere(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+            hitbox.x += xSpeed;
+        } else {
+            hitbox.x = GetEntityXPosNextToWall(hitbox, xSpeed);
+        }
+
+    }
+
+    public void changeHealth(int value) {
+        currentHealth += value;
+
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            //Game Over
+        } else if (currentHealth >= maxHealth) {
+            currentHealth = maxHealth;
+        }
+    }
+
+    private void loadAnimations() {
+
+        BufferedImage img = LoadSave.GetSpriteAtlas(LoadSave.PLAYER_ATLAS);
+
+        animations = new BufferedImage[7][8];
+        for (int j = 0; j < animations.length; j++) {
+            for (int i = 0; i < animations[j].length; i++) {
+                animations[j][i] = img.getSubimage(i * 64, j * 40, 64, 40);
+            }
+        }
+
+        statusBarImg = LoadSave.GetSpriteAtlas(STATUS_BAR);
+
+    }
+
+    public void loadLvlData(int[][] lvlData) {
+        this.lvlData = lvlData;
+        if (!IsEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
+    }
+    
+     public void resetAll() {
+        resetDirBooleans();
+        inAir = false;
+        attacking = false;
+        moving = false;
+        playerAction = IDLE;
+        currentHealth = maxHealth;
+        
+        hitbox.x = x;
+        hitbox.y = y;
+        
+        if (!IsEntityOnFloor(hitbox, lvlData)) {
+            inAir = true;
+        }
+    }
+     public void resetDirBooleans() {
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+    }
+     
+      public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public void setLeft(boolean left) {
+        this.left = left;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public void setUp(boolean up) {
+        this.up = up;
+    }
+
+    public boolean isRight() {
+        return right;
+    }
+
+    public void setRight(boolean right) {
+        this.right = right;
+    }
+
+    public boolean isDown() {
+        return down;
+    }
+
+    public void setDown(boolean down) {
+        this.down = down;
+    }
+
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+
 
 }
