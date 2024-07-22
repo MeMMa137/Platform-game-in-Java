@@ -59,4 +59,19 @@ public void checkEnemyHit(Rectangle2D.Float attackBox) {
             }
         }
     }
+private void loadEnemyImgs() {
+        crabbyArr = new BufferedImage[5][9];
+        BufferedImage temp = LoadSave.GetSpriteAtlas(LoadSave.CRABBY_SPRITE);
+        for (int j = 0; j < crabbyArr.length; j++) {
+            for (int i = 0; i < crabbyArr[j].length; i++) {
+                crabbyArr[j][i] = temp.getSubimage(i * CRABBY_WIDTH_DEFAULT, j * CRABBY_HEIGHT_DEFAULT, CRABBY_WIDTH_DEFAULT, CRABBY_HEIGHT_DEFAULT);
+            }
+        }
+    }
+
+    public void resetAllEnemies() {
+        for (Crabby c : crabbies) {
+            c.resetEnemy();
+        }    
+    }
 }
